@@ -99,7 +99,7 @@ def RotateRight(StepDecrement):
 
 # Start main loop
 while True:
-  RotateLeft(2000)
+  RotateLeft(200)
   time.sleep(3)
   RotateRight(40)
   print StepATM

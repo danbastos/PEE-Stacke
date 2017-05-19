@@ -29,29 +29,42 @@ pwm_Motors_Left = GPIO.PWM(MotorsPWM_Left, 100)
 Encoder_Right_Front = 10
 GPIO.setup(Encoder_Right_Front,GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
+#Encoder 2
+Encoder_Left_Front = 11
+GPIO.setup(Encoder_Left_Front,GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+
 def my_callback(Encoder_Right_Front):
     return
 
 GPIO.add_event_detect(Encoder_Right_Front, GPIO.RISING, callback=my_callback)
 
+def left_callback(Encoder_Left_Front):
+    return
+
+GPIO.add_event_detect(Encoder_Left_Front, GPIO.RISING, callback=left_callback)
+
 def Move(distance):
     count = 0
-    countfinal = 1768.3466*distance
+    countfinal = 1768.3466*distance/4
     GPIO.output(MotorsSTBY,1)
     GPIO.output(MotorControl_Right,1)
     GPIO.output(MotorControl2_Right,0)
     GPIO.output(MotorsPWM_Right,1)
-    pwm_Motors_Right.start(100)
+    pwm_Motors_Right.start(99)
     GPIO.output(MotorControl_Left,1)
     GPIO.output(MotorControl2_Left,0)
     GPIO.output(MotorsPWM_Left,1)
     pwm_Motors_Left.start(100)
     print "Turning motor on, PWM 100%"
     GPIO.input(Encoder_Right_Front)
+    GPIO.input(Encoder_Left_Front)
     while(count <= countfinal):
-        if GPIO.event_detected(Encoder_Right_Front):
-            count = count + 1
-            print 'Count is: ', count
+        while(not GPIO.event_detected(Encoder_Right_Front)):
+            sleep(0.000001)
+        while(not GPIO.event_detected(Encoder_Left_Front)):
+            sleep(0.000001)
+            
+        count = count + 1
     print 'Moved: ', distance
     #desligar todos os motores
     GPIO.output(MotorsSTBY,0)
@@ -75,7 +88,7 @@ def Rotate180Degrees():
     pwm_Motors_Left.start(100)
     GPIO.output(MotorsSTBY,1)
     sleep(2*1.6)  #este valor deve ser ajustado depois com toda a carga
-    #pode ser determinado com os encoders de forma prática qual o valor para virar o desejado
+    #pode ser determinado com os encoders de forma pratica qual o valor para virar o desejado
 
     #desligar todos os motores
     GPIO.output(MotorsSTBY,0)
@@ -88,17 +101,17 @@ def Rotate180Degrees():
 
 
 def Rotate90DegreesLeft():
-    GPIO.output(MotorControl_Right,1)
-    GPIO.output(MotorControl2_Right,0)
-    GPIO.output(MotorControl_Left,0)
-    GPIO.output(MotorControl2_Left,1)
+    GPIO.output(MotorControl_Right,0)
+    GPIO.output(MotorControl2_Right,1)
+    GPIO.output(MotorControl_Left,1)
+    GPIO.output(MotorControl2_Left,0)
     GPIO.output(MotorsPWM_Left,1)
     GPIO.output(MotorsPWM_Right,1)
     pwm_Motors_Right.start(100)
     pwm_Motors_Left.start(100)
     GPIO.output(MotorsSTBY,1)
-    sleep(1.6)  #este valor deve ser ajustado depois com toda a carga
-    #pode ser determinado com os encoders de forma prática qual o valor para virar o desejado
+    sleep(1.7)  #este valor deve ser ajustado depois com toda a carga
+    #pode ser determinado com os encoders de forma pratica qual o valor para virar o desejado
 
     #desligar todos os motores
     GPIO.output(MotorsSTBY,0)
@@ -110,17 +123,22 @@ def Rotate90DegreesLeft():
     GPIO.output(MotorsPWM_Left,0)
 
 def Rotate90DegreesRight():
-    GPIO.output(MotorControl_Right,0)
-    GPIO.output(MotorControl2_Right,1)
-    GPIO.output(MotorControl_Left,1)
-    GPIO.output(MotorControl2_Left,0)
+    count = 0
+    countfinal = 139.5
+    GPIO.output(MotorControl_Right,1)
+    GPIO.output(MotorControl2_Right,0)
+    GPIO.output(MotorControl_Left,0)
+    GPIO.output(MotorControl2_Left,1)
     GPIO.output(MotorsPWM_Left,1)
     GPIO.output(MotorsPWM_Right,1)
-    pwm_Motors_Right.start(100)
-    pwm_Motors_Left.start(100)
+    pwm_Motors_Right.start(75)
+    pwm_Motors_Left.start(75)
     GPIO.output(MotorsSTBY,1)
-    sleep(1.6)  #este valor deve ser ajustado depois com toda a carga
-    #pode ser determinado com os encoders de forma prática qual o valor para virar o desejado
+    GPIO.input(Encoder_Left_Front)
+    while(count <= countfinal):
+        while(not GPIO.event_detected(Encoder_Left_Front)):
+            sleep(0.000001)
+        count = count + 1
 
     #desligar todos os motores
     GPIO.output(MotorsSTBY,0)
@@ -131,11 +149,64 @@ def Rotate90DegreesRight():
     GPIO.output(MotorControl2_Left,0)
     GPIO.output(MotorsPWM_Left,0)
 
+def Rotate(degrees, direction):
+    count = 0
+    #countfinal = 3.241*degrees
+    countfinal = 1.55*degrees
+    if direction == 0:  #rotacao para a direita
+        GPIO.output(MotorControl_Right,1)
+        GPIO.output(MotorControl2_Right,0)
+        GPIO.output(MotorControl_Left,0)
+        GPIO.output(MotorControl2_Left,1)
+        GPIO.output(MotorsPWM_Left,1)
+        GPIO.output(MotorsPWM_Right,1)
+        pwm_Motors_Right.start(75)
+        pwm_Motors_Left.start(75)
+        GPIO.output(MotorsSTBY,1)
+        GPIO.input(Encoder_Left_Front)
+        while(count <= countfinal):
+            while(not GPIO.event_detected(Encoder_Left_Front)):
+                sleep(0.000001)
+            count = count + 1
+            #print 'Count is: ', count
+    elif direction == 1:    #rotacao para a esquerda
+        GPIO.output(MotorControl_Right,0)
+        GPIO.output(MotorControl2_Right,1)
+        GPIO.output(MotorControl_Left,1)
+        GPIO.output(MotorControl2_Left,0)
+        GPIO.output(MotorsPWM_Left,1)
+        GPIO.output(MotorsPWM_Right,1)
+        pwm_Motors_Right.start(75)
+        pwm_Motors_Left.start(75)
+        GPIO.output(MotorsSTBY,1)
+        GPIO.input(Encoder_Right_Front)
+        while(count <= countfinal):
+            while(not GPIO.event_detected(Encoder_Right_Front)):
+                sleep(0.000001)
+            count = count + 1
+                #print 'Count is: ', count
+    else:
+        return
+    #desligar todos os motores
+    print 'Count is: ', count
+    GPIO.output(MotorsSTBY,0)
+    GPIO.output(MotorControl_Right,0)
+    GPIO.output(MotorControl2_Right,0)
+    GPIO.output(MotorsPWM_Right,0)
+    GPIO.output(MotorControl_Left,0)
+    GPIO.output(MotorControl2_Left,0)
+    GPIO.output(MotorsPWM_Left,0)
+    
 
 while True:
 
-    #Move(0.5)
-    Rotate90DegreesRight()
+    Move(0.5)	#distance to move given in meters
+    #Rotate90DegreesRight()
+    #Rotate(90, 1)
+    #sleep(2)
+    #Rotate(90, 0)
+    #rodar para a esquerda, segundo argumento 0
+    #rodar para a direita, segundo argumento 1
     print "Rodou 90 graus, supostamente"
     sleep(3)
     #stop motors
