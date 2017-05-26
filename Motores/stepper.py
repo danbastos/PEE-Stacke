@@ -20,14 +20,20 @@ for pin in StepPins:
 
 # Define advanced sequence
 # as shown in manufacturers datasheet
-Seq = [[1,0,0,1],
-       [1,0,0,0],
-       [1,1,0,0],
-       [0,1,0,0],
+#Seq = [[1,0,0,1],
+#       [1,0,0,0],
+#       [1,1,0,0],
+#       [0,1,0,0],
+#       [0,1,1,0],
+#       [0,0,1,0],
+#       [0,0,1,1],
+#       [0,0,0,1]]
+
+Seq = [[1,1,0,0],
        [0,1,1,0],
-       [0,0,1,0],
        [0,0,1,1],
-       [0,0,0,1]]
+       [1,0,0,1]]
+
        
 StepCount = len(Seq)
 #StepDir = 1 # Set to 1 or 2 for clockwise
@@ -99,8 +105,8 @@ def RotateRight(StepDecrement):
 
 # Start main loop
 while True:
-  RotateLeft(200)
+  RotateRight(5000)
   time.sleep(3)
-  RotateRight(40)
+  RotateLeft(40)
   print StepATM
   time.sleep(3)
