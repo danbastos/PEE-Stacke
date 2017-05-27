@@ -11,6 +11,9 @@ MotorControl2_Left = 22  #AIN2 - motores esquedos
 MotorsPWM_Left = 17  #PWM de controlo da esquerda 
 MotorsSTBY = 24  #Standby (Decide se todos os motores estao ligados ou desligados)
     
+pwmRightDefault=99
+pwmLeftDefault=100
+
 
 GPIO.setup(MotorsSTBY,GPIO.OUT)
 GPIO.setup(IRsensor, GPIO.IN)
@@ -118,23 +121,36 @@ def BackWards(distance):
     #desligar todos os motores
     TurnOffMotors()
     
-def Tilt(Error,pwmRight,pwmLeft):
+def Tilt(Error):
     #Error [-3,3]
+    global pwmRight
+    global pwmLeft
+    pwmErrorScaling=1   #scale 
 
     if Error < 0 and Error>=-3:
-        pwmRight+=Error     #if the robot tilts to the left the pwm of the right motors are less
+        pwmRight+=Error*pwmErrorScaling      #if the robot tilts to the left the pwm of the right motors are less
 
     elif Error>0 and Error<=3:
-        pwmLeft-=Error
+        pwmLeft-=Error*pwmErrorScaling
     else:
         #caso o erro seja igual a 0, o pwm nos motores passa a ser o default
-        pwmRight=pwmDefault 
-        pwmLeft=pwmDefault
+        pwmRight=pwmRightDefault 
+        pwmLeft=pwmLeftDefault
         return pwmRight,pwmLeft
 
     return pwmRight,pwmLeft
 
-def Move(distance):
+def Move(delay):
+    #Move for a time given by delay
+    Tilt(Error)
+    RightMotors(1,pwmRight)
+    LeftMotors(1,pwmLeft)
+    GPIO.output(MotorsSTBY,1)
+    sleep(delay)
+    TurnOffMotors()
+
+
+def Forward(distance):
     count = 0
     countfinal = 442.087*distance
     RightMotors(1,99)
