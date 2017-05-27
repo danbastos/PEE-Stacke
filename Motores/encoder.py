@@ -1,5 +1,7 @@
 import RPi.GPIO as GPIO
 from time import sleep
+from motor import *
+
 
 GPIO.setmode(GPIO.BCM)
 IRsensor = 4
@@ -13,7 +15,6 @@ MotorsSTBY = 24  #Standby (Decide se todos os motores estao ligados ou desligado
     
 pwmRightDefault=99
 pwmLeftDefault=100
-
 
 GPIO.setup(MotorsSTBY,GPIO.OUT)
 GPIO.setup(IRsensor, GPIO.IN)
@@ -49,78 +50,6 @@ def left_callback(Encoder_Left_Front):
 GPIO.add_event_detect(Encoder_Left_Front, GPIO.RISING, callback=left_callback)
 
 
-def RightMotors(direction,pwm):
-    if direction == 1:    # motores da direita a andar para a frente
-        GPIO.output(MotorControl_Right,1)
-        GPIO.output(MotorControl2_Right,0)
-
-    elif direction == 0:  #motores da direita a andar para tras
-        GPIO.output(MotorControl_Right,0)
-        GPIO.output(MotorControl2_Right,1)
-    else:
-        return
-    GPIO.output(MotorsPWM_Right,1)    
-    pwm_Motors_Right.start(pwm)
-    return
-
-def LeftMotors(direction,pwm):
-    if direction == 1:    # motores da direita a andar para a frente
-        GPIO.output(MotorControl_Left,1)
-        GPIO.output(MotorControl2_Left,0)
-        
-    elif direction == 0:  #motores da direita a andar para tras
-        GPIO.output(MotorControl_Left,0)
-        GPIO.output(MotorControl2_Left,1)
-    else:
-        return
-    GPIO.output(MotorsPWM_Left,1)    
-    pwm_Motors_Left.start(pwm)
-    return
-
-def TurnOffMotors():
-    GPIO.output(MotorsSTBY,0)
-    GPIO.output(MotorControl_Right,0)
-    GPIO.output(MotorControl2_Right,0)
-    GPIO.output(MotorsPWM_Right,0)
-    GPIO.output(MotorControl_Left,0)
-    GPIO.output(MotorControl2_Left,0)
-    GPIO.output(MotorsPWM_Left,0)
-    return
-
-
-def BackWards(distance):
-    count = 0
-    countfinal = 442.087*distance
-    IRcurrent = GPIO.input(IRsensor)
-    #print 'GPIO pin: ', IRcurrent
-    IRprevious = IRcurrent
-    RightMotors(0,99)
-    LeftMotors(0,100)
-    GPIO.output(MotorsSTBY,1)
-    print "Turning motor on, PWM 100%"
-    GPIO.input(Encoder_Right_Front)
-    GPIO.input(Encoder_Left_Front)
-    while(count <= countfinal):
-        while(not GPIO.event_detected(Encoder_Right_Front)):
-            sleep(0.000001)
-        while(not GPIO.event_detected(Encoder_Left_Front)):
-            sleep(0.000001)
-           
-        count = count + 1
-        IRcurrent = GPIO.input(IRsensor)
-        if IRcurrent:
-            GPIO.output(MotorsSTBY,1)
-            IRprevious = IRcurrent
-        else:
-            GPIO.output(MotorsSTBY,0)
-            while(not IRcurrent):
-                IRcurrent = GPIO.input(IRsensor)
-                sleep(0.000001)
-            GPIO.output(MotorsSTBY,1)
-            
-    #desligar todos os motores
-    TurnOffMotors()
-    
 def Tilt(Error):
     #Error [-3,3]
     global pwmRight
@@ -152,7 +81,7 @@ def Move(delay):
 
 def Forward(distance):
     count = 0
-    countfinal = 442.087*distance
+    countfinal = 430*distance
     RightMotors(1,99)
     LeftMotors(1,100)
     GPIO.output(MotorsSTBY,1)
@@ -171,11 +100,44 @@ def Forward(distance):
     TurnOffMotors()
 
 
+def BackWards(distance):
+    count = 0
+    countfinal = 430*distance
+    IRcurrent = GPIO.input(IRsensor)
+    #print 'GPIO pin: ', IRcurrent
+    IRprevious = IRcurrent
+    RightMotors(0,99)
+    LeftMotors(0,100)
+    GPIO.output(MotorsSTBY,1)
+    print "Turning motor on, PWM 100%"
+    GPIO.input(Encoder_Right_Front)
+    GPIO.input(Encoder_Left_Front)
+    while(count <= countfinal):
+        while(not GPIO.event_detected(Encoder_Right_Front)):
+            sleep(0.000001)
+        while(not GPIO.event_detected(Encoder_Left_Front)):
+            sleep(0.000001)
+           
+        count = count + 1
+        IRcurrent = GPIO.input(IRsensor)
+        if IRcurrent:
+            GPIO.output(MotorsSTBY,1)
+            IRprevious = IRcurrent
+        else:
+            GPIO.output(MotorsSTBY,0)
+            while(not IRcurrent):
+                IRcurrent = GPIO.input(IRsensor)
+                sleep(0.000001)
+            GPIO.output(MotorsSTBY,1)
+            
+    #desligar todos os motores
+    TurnOffMotors()
+
 def Rotate180DegreesRight():
     count = 0
-    countfinal = 280
-    RightMotors(0,75)
-    LeftMotors(1,75)
+    countfinal = 769
+    RightMotors(0,80)
+    LeftMotors(1,80)
     GPIO.output(MotorsSTBY,1)
     GPIO.input(Encoder_Left_Front)
     while(count <= countfinal):
@@ -188,10 +150,11 @@ def Rotate180DegreesRight():
 
 def Rotate180DegreesLeft():
     count = 0
-    countfinal = 280
-    RightMotors(1,75)
-    LeftMotors(0,75)
+    countfinal = 400
+    RightMotors(1,80)
+    LeftMotors(0,80)
     GPIO.output(MotorsSTBY,1)
+    GPIO.input(Encoder_Right_Front)
     while(count <= countfinal):
         while(not GPIO.event_detected(Encoder_Right_Front)):
             sleep(0.000001)
@@ -203,10 +166,11 @@ def Rotate180DegreesLeft():
 
 def Rotate90DegreesLeft():
     count = 0
-    countfinal = 139.5
-    RightMotors(1,75)
-    LeftMotors(0,75)
+    countfinal = 190
+    RightMotors(1,80)
+    LeftMotors(0,80)
     GPIO.output(MotorsSTBY,1)
+    GPIO.input(Encoder_Right_Front)
     while(count <= countfinal):
         while(not GPIO.event_detected(Encoder_Right_Front)):
             sleep(0.000001)
@@ -217,9 +181,9 @@ def Rotate90DegreesLeft():
 
 def Rotate90DegreesRight():
     count = 0
-    countfinal = 139.5
-    RightMotors(0,75)
-    LeftMotors(1,75)
+    countfinal = 369
+    RightMotors(0,80)
+    LeftMotors(1,80)
     GPIO.output(MotorsSTBY,1)
     GPIO.input(Encoder_Left_Front)
     while(count <= countfinal):
@@ -282,15 +246,27 @@ def Rotate(degrees, direction):
 
 while True:
 
-    #Move(0.5)	#distance to move given in meters
-    #Rotate90DegreesRight()
-    #Rotate(90, 1)
+    Forward(1)	#distance to move given in meters
+    sleep(1)
+    Rotate90DegreesRight()
+    sleep(1)
+    Forward(0.3)
+    sleep(1)
+    Rotate90DegreesLeft()
+    sleep(1)
+    BackWards(0.5)
+    sleep(1)
+    Rotate180DegreesRight()
+    sleep(1)
+    Rotate180DegreesLeft()
+    sleep(1)
+    Forward(1)
     #sleep(2)
     #Rotate(90, 0)
     #rodar para a esquerda, segundo argumento 0
     #rodar para a direita, segundo argumento 1
     #print "Rodou 90 graus, supostamente"
-    BackWards(1)
-    sleep(3)
+    #BackWards(0.3)
+    sleep(1)
     #stop motors
     GPIO.cleanup()
