@@ -1,3 +1,5 @@
+#Authors: Daniel Bastos, Rui Oliveira, João Rezende
+
 import sys
 import time
 

@@ -1,3 +1,5 @@
+#Authors: Daniel Bastos, Rui Oliveira, João Rezende
+
 from gpiozero import OutputDevice
 from time import sleep
 

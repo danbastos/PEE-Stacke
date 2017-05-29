@@ -1,3 +1,5 @@
+#Authors: Daniel Bastos, Rui Oliveira, João Rezende
+
 import RPi.GPIO as GPIO
 from time import sleep
 from motor import *

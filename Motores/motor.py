@@ -1,3 +1,5 @@
+#Authors: Daniel Bastos, Rui Oliveira, João Rezende
+
 import RPi.GPIO as GPIO
 
 GPIO.setmode(GPIO.BCM)
