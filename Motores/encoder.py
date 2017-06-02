@@ -1,4 +1,4 @@
-#Authors: Daniel Bastos, Rui Oliveira, João Rezende
+#Authors: Daniel Bastos, Rui Oliveira, Joao Resende
 
 import RPi.GPIO as GPIO
 from time import sleep
@@ -71,7 +71,7 @@ def Tilt(Error):
 
     return pwmRight,pwmLeft
 
-def Move(delay):
+def Move(delay,Error):
     #Move for a time given by delay
     Tilt(Error)
     RightMotors(1,pwmRight)
