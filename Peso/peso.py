@@ -50,7 +50,7 @@ class HX711:
         else:
             return unsignedValue
 
-    ##falta código aqui ainda....
+    ##falta codigo aqui ainda....
         
     def read_average(self, times=3):
         values = long(0)

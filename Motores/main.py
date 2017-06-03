@@ -33,7 +33,7 @@ GPIO.setup(coil_B_2_pin, GPIO.OUT)
  
 GPIO.output(enable_pin, 1)
  
-def forward(delay, steps,last):
+def down(delay, steps,last):
     if last == 1:
           while(not GPIO.event_detected(End_Course)):
               setStep(1, 0, 0, 1)
@@ -78,7 +78,7 @@ def forward(delay, steps,last):
 ##      time.sleep(delay)
 ##      setStep(1, 0, 1, 0)
 ##      time.sleep(delay)
-def backwards(delay, steps):  
+def up(delay, steps):  
   for i in range(0, steps):
     setStep(0, 1, 0, 1)
     #setStep(1, 0, 1, 0)
@@ -106,11 +106,33 @@ def setStep(w1, w2, w3, w4):
   GPIO.output(coil_B_2_pin, w4)
  
 while True:
+  delay = 5
+  Forward(0.1)
+  sleep(3)
+  up(int(delay) / 1000.0, int(500))
+  cleanup()
+  sleep(3)
+  Backwards(0.5)
+  sleep(3)
+  Rotate90DegreesLeft()
+  sleep(3)
+  Forward(0.5)
+  sleep(3)
+  up(int(delay) / 1000.0, int(1000))
+  cleanup()
+  sleep(3)
+  down(int(delay) / 1000.0, int(900),0)
+  cleanup()
+  sleep(3)
+  Forward(0.5)
+  sleep(3)
+  Rotate90DegreesRight()
+  sleep(3)
+  Forward(0.5)
+  sleep(3)
+  down(int(delay) / 1000.0, int(1000),1)
+  sleep(3)
+  Backwards(0.3)
+  sleep(3)
   
-  delay = raw_input("Delay between steps (milliseconds)?")
-  steps = raw_input("How many steps forward? ")
-  forward(int(delay) / 1000.0, int(steps),1)
-  cleanup()
-  steps = raw_input("How many steps backwards? ")
-  backwards(int(delay) / 1000.0, int(steps))
-  cleanup()
+  GPIO.cleanup()

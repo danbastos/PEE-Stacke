@@ -100,7 +100,7 @@ def Forward(distance):
     TurnOffMotors()
 
 
-def BackWards(distance):
+def Backwards(distance):
     count = 0
     countfinal = 430*distance
     IRcurrent = GPIO.input(IRsensor)
@@ -181,7 +181,7 @@ def Rotate90DegreesLeft():
 
 def Rotate90DegreesRight():
     count = 0
-    countfinal = 369
+    countfinal = 225
     RightMotors(0,80)
     LeftMotors(1,80)
     GPIO.output(MotorsSTBY,1)
@@ -244,29 +244,29 @@ def Rotate(degrees, direction):
     GPIO.output(MotorsPWM_Left,0)
     
 
-while True:
+#while True:
 
-    Forward(1)	#distance to move given in meters
-    sleep(1)
-    Rotate90DegreesRight()
-    sleep(1)
-    Forward(0.3)
-    sleep(1)
-    Rotate90DegreesLeft()
-    sleep(1)
-    BackWards(0.5)
-    sleep(1)
-    Rotate180DegreesRight()
-    sleep(1)
-    Rotate180DegreesLeft()
-    sleep(1)
-    Forward(1)
+    #Forward(0.5)	#distance to move given in meters
+    #sleep(1)
+    #Rotate90DegreesRight()
+    #sleep(2)
+    #Forward(0.3)
+    #sleep(1)
+    #Rotate90DegreesLeft()
+    #sleep(1)
+    #BackWards(0.5)
+    #sleep(1)
+    #Rotate180DegreesRight()
+    #sleep(1)
+    #Rotate180DegreesLeft()
+    #sleep(1)
+    #Forward(1)
     #sleep(2)
     #Rotate(90, 0)
     #rodar para a esquerda, segundo argumento 0
     #rodar para a direita, segundo argumento 1
     #print "Rodou 90 graus, supostamente"
     #BackWards(0.3)
-    sleep(1)
+    #sleep(1)
     #stop motors
-    GPIO.cleanup()
+    #GPIO.cleanup()
