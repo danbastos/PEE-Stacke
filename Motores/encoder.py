@@ -1,5 +1,3 @@
-#Authors: Daniel Bastos, Rui Oliveira, Joao Resende
-
 import RPi.GPIO as GPIO
 from time import sleep
 from motor import *
@@ -71,7 +69,7 @@ def Tilt(Error):
 
     return pwmRight,pwmLeft
 
-def Move(delay,Error):
+def Move(delay):
     #Move for a time given by delay
     Tilt(Error)
     RightMotors(1,pwmRight)
@@ -135,6 +133,41 @@ def Backwards(distance):
     #desligar todos os motores
     TurnOffMotors()
 
+
+def Backward(distance):
+    count = 0
+    countfinal = 430*distance
+    IRcurrent = GPIO.input(IRsensor)
+    #print 'GPIO pin: ', IRcurrent
+    IRprevious = IRcurrent
+    RightMotors(0,99)
+    LeftMotors(0,100)
+    GPIO.output(MotorsSTBY,1)
+    print "Turning motor on, PWM 100%"
+    GPIO.input(Encoder_Right_Front)
+    GPIO.input(Encoder_Left_Front)
+    while(count <= countfinal):
+        while(not GPIO.event_detected(Encoder_Right_Front)):
+            sleep(0.000001)
+        while(not GPIO.event_detected(Encoder_Left_Front)):
+            sleep(0.000001)
+           
+        count = count + 1
+        IRcurrent = GPIO.input(IRsensor)
+        if IRcurrent:
+            GPIO.output(MotorsSTBY,1)
+            IRprevious = IRcurrent
+        else:
+            GPIO.output(MotorsSTBY,0)
+            while(not IRcurrent):
+                IRcurrent = GPIO.input(IRsensor)
+                sleep(0.000001)
+            GPIO.output(MotorsSTBY,1)
+            
+    #desligar todos os motores
+    TurnOffMotors()
+
+
 def Rotate180DegreesRight():
     count = 0
     countfinal = 769
@@ -168,7 +201,7 @@ def Rotate180DegreesLeft():
 
 def Rotate90DegreesLeft():
     count = 0
-    countfinal = 190
+    countfinal = 150
     RightMotors(1,80)
     LeftMotors(0,80)
     GPIO.output(MotorsSTBY,1)
@@ -183,7 +216,7 @@ def Rotate90DegreesLeft():
 
 def Rotate90DegreesRight():
     count = 0
-    countfinal = 225
+    countfinal = 220
     RightMotors(0,80)
     LeftMotors(1,80)
     GPIO.output(MotorsSTBY,1)
@@ -254,11 +287,12 @@ def Rotate(degrees, direction):
     #sleep(2)
     #Forward(0.3)
     #sleep(1)
+    #sleep(1)
     #Rotate90DegreesLeft()
     #sleep(1)
     #BackWards(0.5)
     #sleep(1)
-    #Rotate180DegreesRight()
+    #Rotate90DegreesRight()
     #sleep(1)
     #Rotate180DegreesLeft()
     #sleep(1)

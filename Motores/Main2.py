@@ -33,7 +33,7 @@ GPIO.setup(coil_B_2_pin, GPIO.OUT)
  
 GPIO.output(enable_pin, 1)
  
-def forward(delay, steps,last):
+def down(delay, steps,last):
     if last == 1:
           while(not GPIO.event_detected(End_Course)):
               setStep(1, 0, 0, 1)
@@ -78,7 +78,7 @@ def forward(delay, steps,last):
 ##      time.sleep(delay)
 ##      setStep(1, 0, 1, 0)
 ##      time.sleep(delay)
-def backwards(delay, steps):  
+def up(delay, steps):  
   for i in range(0, steps):
     setStep(0, 1, 0, 1)
     #setStep(1, 0, 1, 0)
@@ -106,11 +106,16 @@ def setStep(w1, w2, w3, w4):
   GPIO.output(coil_B_2_pin, w4)
  
 while True:
-  
-  delay = raw_input("Delay between steps (milliseconds)?")
-  steps = raw_input("How many steps down? ")
-  forward(int(delay) / 1000.0, int(steps),0)
-  cleanup()
-  steps = raw_input("How many steps up? ")
-  backwards(int(delay) / 1000.0, int(steps))
-  cleanup()
+  distance = raw_input("How much distance you want to move forward?")
+  print(distance)
+  Forward(float(distance))
+  sleep(3)
+  back = raw_input("How much distance you want to move backwards?")
+  Backwards(float(back))
+  sleep(3)
+  print "Robot will rotate 90 Degrees Left"
+  Rotate90DegreesLeft()
+  sleep(3)
+  print "Robot will rotate 90 Degrees Right"
+  Rotate90DegreesRight()
+  sleep(3)

@@ -1,6 +1,3 @@
-#Authors: Daniel Bastos, Rui Oliveira, Joao Resende
-
-
 from gpiozero import LED
 from time import sleep
 

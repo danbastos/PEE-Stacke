@@ -1,5 +1,3 @@
-#Authors: Daniel Bastos, Rui Oliveira, Joao Resende
-
 from gpiozero import OutputDevice
 from time import sleep
 

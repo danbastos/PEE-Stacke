@@ -1,5 +1,3 @@
-#Authors: Daniel Bastos, Rui Oliveira, Joao Resende
-
 import sys
 import time
 import RPi.GPIO as GPIO

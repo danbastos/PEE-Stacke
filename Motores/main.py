@@ -107,7 +107,7 @@ def setStep(w1, w2, w3, w4):
  
 while True:
   delay = 5
-  Forward(0.1)
+  Forward(0.2)
   sleep(3)
   up(int(delay) / 1000.0, int(500))
   cleanup()
@@ -118,7 +118,7 @@ while True:
   sleep(3)
   Forward(0.5)
   sleep(3)
-  up(int(delay) / 1000.0, int(1000))
+  up(int(delay) / 1000.0, int(500))
   cleanup()
   sleep(3)
   down(int(delay) / 1000.0, int(900),0)
@@ -132,7 +132,7 @@ while True:
   sleep(3)
   down(int(delay) / 1000.0, int(1000),1)
   sleep(3)
-  Backwards(0.3)
+  Backward(0.3)
   sleep(3)
   
   GPIO.cleanup()
